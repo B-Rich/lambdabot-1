@@ -1,7 +1,7 @@
 --
--- | DICT (RFC 2229) Lookup 
+-- | DICT (RFC 2229) Lookup
 -- Tom Moertel <tom@moertel.com>
--- 
+--
 --Here's how you might write a program to query the Jargon database for
 --the definition of "hacker" and then print the result:
 --
@@ -9,7 +9,7 @@
 -- >
 -- >  doJargonLookup :: String -> IO String
 -- >  doJargonLookup query = do
--- >      result <- simpleDictLookup (QC "dict.org" 2628) "jargon" query 
+-- >      result <- simpleDictLookup (QC "dict.org" 2628) "jargon" query
 -- >      return $ case result of
 -- >          Left errorResult -> "ERROR: " ++ errorResult
 -- >          Right dictResult -> dictResult
@@ -19,7 +19,7 @@ module Plugin.Dict.DictLookup ( simpleDictLookup, QueryConfig(..), LookupResult)
 
 import Data.List
 import System.IO
-import Control.OldException (handle)
+import Control.Exception (handle, IOException)
 import Network
 
 data QueryConfig    = QC { host :: String, port :: Int }
@@ -30,11 +30,14 @@ type LookupResult   = Either String String -- Left <error> | Right <result>
 
 simpleDictLookup :: QueryConfig -> DictName -> String -> IO LookupResult
 simpleDictLookup config dictnm query =
-    handle (\e -> (return $ Left (show e))) $ do
+    handle exceptionToLookupResult $ do
         conn <- openDictConnection config
         result <- queryDict conn dictnm query
         closeDictConnection conn
         return result
+    where
+      exceptionToLookupResult :: IOException -> IO LookupResult
+      exceptionToLookupResult e = return $ Left (show e)
 
 openDictConnection :: QueryConfig -> IO DictConnection
 openDictConnection config = do
@@ -65,7 +68,7 @@ queryDict conn dictnm query = do
         '5':'5':'2':_ -> return $ Right ("No match for \"" ++ query ++ "\".\n")
         '5':_         -> return $ Left response -- error response
         _             -> return $ Left ("Bogus response: " ++ response)
-            
+
     where
 
     readDefinition = do

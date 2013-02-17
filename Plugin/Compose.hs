@@ -11,7 +11,7 @@ import Message
 
 import Control.Monad.State
 import Control.Arrow (first)
-import Control.OldException (Exception(NoMethodError))
+import Control.Exception (Exception(NoMethodError))
 
 $(plugin "Compose")
 

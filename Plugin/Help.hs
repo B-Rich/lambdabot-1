@@ -3,7 +3,7 @@
 module Plugin.Help (theModule) where
 
 import Plugin
-import Control.OldException (Exception(..), evaluate)
+import Control.Exception (Exception(..), evaluate)
 
 $(plugin "Help")
 

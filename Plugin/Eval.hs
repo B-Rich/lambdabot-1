@@ -16,7 +16,7 @@ import System.Directory
 import System.Exit
 import Codec.Binary.UTF8.String (decodeString)
 import qualified Data.ByteString.Char8 as P
-import Control.OldException (try)
+import Control.Exception (try)
 
 $(plugin "Plugs")
 

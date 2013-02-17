@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances #-}
 -- | Logging an IRC channel..
 module Plugin.Activity (theModule) where
 
@@ -7,7 +7,7 @@ import qualified Message as Msg
 
 import Control.Arrow ((&&&))
 import Data.Maybe (fromMaybe)
-import Control.OldException (evaluate)
+import Control.Exception (evaluate)
 
 import System.Time
 

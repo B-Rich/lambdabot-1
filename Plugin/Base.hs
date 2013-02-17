@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, PatternGuards, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, PatternGuards,
+  TypeSynonymInstances, FlexibleInstances #-}
 -- | Lambdabot base module. Controls message send and receive
 module Plugin.Base (theModule) where
 
@@ -12,7 +13,7 @@ import qualified Data.Map as M   (insert, delete)
 
 import Control.Monad.State  (MonadState(..), when, gets)
 
-import Control.Exception (NoMethodError)
+import Control.Exception
 
 import qualified Data.ByteString.Char8 as P
 import qualified Text.Regex as R
@@ -237,10 +238,10 @@ doPRIVMSG' myname msg target
 
                             (do mstrs <- catchError
                                  (Right `fmap` fprocess_ m fcmd frest)
-                                 (\ex -> case (ex :: IRCError) of -- dispatch
+                                 (\ex -> case ex of -- dispatch
                                    (IRCRaised (NoMethodError _)) -> catchError
                                         (Left `fmap` process m msg towhere cmd' rest)
-                                        (\ey -> case (ey :: IRCError) of -- dispatch
+                                        (\ey -> case ey of -- dispatch
                                             (IRCRaised (NoMethodError _)) ->
                                                 Left `fmap` process_ m cmd' rest
                                             _ -> throwError ey)

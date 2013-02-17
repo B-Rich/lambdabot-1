@@ -1,5 +1,4 @@
-
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, PatternGuards #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, PatternGuards, ScopedTypeVariables #-}
 -- Copyright (c) 2004-6 Donald Bruce Stewart - http://www.cse.unsw.edu.au/~dons
 -- GPL version 2 or later (see http://www.gnu.org/copyleft/gpl.html)
 
@@ -12,11 +11,11 @@ import Lambdabot.Utils.Parser
 import Language.Haskell.Exts.Parser
 import qualified Language.Haskell.Exts.Syntax as Hs
 import qualified Text.Regex as R
-import System.Directory
+import System.Directory hiding (findFile)
 import System.Exit
 import Codec.Binary.UTF8.String (decodeString)
 import qualified Data.ByteString.Char8 as P
-import Control.Exception (try)
+import Control.Exception (IOException,try)
 
 $(plugin "Plugs")
 
@@ -98,8 +97,8 @@ comp src = do
 --                             ,"-hidir","State/"
                              ,".L.hs"] Nothing
     -- cleanup, in case of error the files are not generated
-    try $ removeFile ".L.hi"
-    try $ removeFile ".L.o"
+    (_ :: Either IOException ()) <- try $ removeFile ".L.hi"
+    (_ :: Either IOException ()) <- try $ removeFile ".L.o"
 
     case (munge o', munge e') of
         ([],[]) | c /= ExitSuccess -> return "Error."

@@ -1,8 +1,38 @@
+{-# LANGUAGE CPP, DeriveDataTypeable #-}
+
 -- | Error utilities
 module Lambdabot.Error where
 
+import Control.Exception
 import Control.Monad       (liftM)
 import Control.Monad.Error (MonadError (..))
+import Data.Typeable       (Typeable)
+import Lambdabot.Utils     (io)
+
+
+#ifdef mingw32_HOST_OS
+type Signal = String
+newtype SignalException = SignalException Signal deriving (Show,Typeable)
+
+instance Exception SignalException
+#else
+import System.Posix.Signals
+
+-- A new type for the SignalException, must be Typeable so we can make a
+-- dynamic exception out of it.
+newtype SignalException = SignalException Signal deriving (Show, Typeable)
+
+instance Exception SignalException
+#endif
+
+-- A type for handling both Haskell exceptions and external signals
+data IRCError e = IRCRaised e | SignalCaught Signal deriving (Typeable)
+
+instance Exception e => Exception (IRCError e)
+
+instance Show e => Show (IRCError e) where
+    show (IRCRaised    e) = show e
+    show (SignalCaught s) = show s
 
 -- | 'catchErrorJust' is an error catcher for the Maybe type. As input is given
 --   a deciding function, a monad and a handler. When an error is caught, the

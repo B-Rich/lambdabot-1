@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances #-}
 -- | Module: Vote
 -- | Support for voting
 -- |
@@ -177,4 +177,3 @@ closePoll fm writer poll = case M.lookup (P.pack poll) fm of
     Nothing     -> return $ "No such poll: " ++ show poll
     Just (_,p)  -> do writer $ M.update (const (Just (False,p))) (P.pack poll) fm
                       return $ "Poll " ++ show poll ++ " closed."
-

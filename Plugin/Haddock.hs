@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances #-}
 -- | Hackish Haddock module.
 module Plugin.Haddock (theModule) where
 
@@ -26,4 +26,3 @@ instance Module HaddockModule HaddockState where
           -- make \@index ($) work.
           stripPs :: ByteString -> ByteString
           stripPs = fst . P.spanEnd (==')') . snd . P.span (=='(')
-

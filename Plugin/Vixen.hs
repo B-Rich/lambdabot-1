@@ -13,7 +13,7 @@ import Data.Binary.Put
 import Data.Binary.Get
 
 import Control.Arrow ((***))
-import System.Directory
+import System.Directory hiding (findFile)
 import qualified Data.ByteString.Char8 as P
 
 import File (findFile)

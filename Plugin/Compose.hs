@@ -11,7 +11,7 @@ import Message
 
 import Control.Monad.State
 import Control.Arrow (first)
-import Control.Exception (Exception(NoMethodError))
+import Control.Exception
 
 $(plugin "Compose")
 
@@ -56,7 +56,7 @@ lookupP (a,b) cmd = withModule ircCommands cmd
         when (cmd `elem` privs) $ error "Privledged commands cannot be composed"
         bindModule1 $ \str -> catchError
                     (process m a b cmd str)
-                    (\ex -> case (ex :: IRCError) of
+                    (\ex -> case ex of
                                 (IRCRaised (NoMethodError _)) -> process_ m cmd str
                                 _ -> throwError ex))
 

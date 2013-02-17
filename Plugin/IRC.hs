@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables #-}
 -- | The plugin-level IRC interface.
 
 module Plugin.IRC (theModule) where
@@ -111,11 +111,12 @@ online tag hostn portnum nickn ui = do
     putMVar sendmv ()
     signalQSem sem1
   catchError (addServer tag $ io . sendMsg tag sock sendmv)
-             (\err -> io (hClose sock) >> throwError err)
+             (\(err :: IRCError SomeException) -> io (hClose sock) >> throwError err)
   lift $ ircSignOn hostn (Nick tag nickn) ui
   lift $ liftLB forkIO $ catchError (readerLoop tag nickn sock)
-                                   (\e -> do io $ hPutStrLn stderr $ "irc[" ++ tag ++ "] error: " ++ show e
-                                             remServer tag)
+                                    (\(e :: IRCError SomeException) ->
+                                         do io $ hPutStrLn stderr $ "irc[" ++ tag ++ "] error: " ++ show e
+                                            remServer tag)
   return ()
 
 readerLoop :: String -> String -> Handle -> LB ()
@@ -130,7 +131,7 @@ readerLoop tag nickn sock = do
 
 sendMsg :: String -> Handle -> MVar () -> IrcMessage -> IO ()
 sendMsg tag sock mv msg =
-    catchJust ioErrors (do takeMVar mv
-                           P.hPut sock $ P.pack $ encodeMessage msg "\r\n")
-                  (\err -> do hPutStrLn stderr $ "irc[" ++ tag ++ "] error: " ++ show err
-                              hClose sock)
+    catch (do takeMVar mv
+              P.hPut sock $ P.pack $ encodeMessage msg "\r\n")
+          (\(err :: IOException) -> do hPutStrLn stderr $ "irc[" ++ tag ++ "] error: " ++ show err
+                                       hClose sock)

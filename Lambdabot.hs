@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP, ExistentialQuantification, FlexibleContexts,
   FunctionalDependencies, GeneralizedNewtypeDeriving, MultiParamTypeClasses,
   PatternGuards, RankNTypes, TypeOperators, ScopedTypeVariables,
-  UndecidableInstances, DeriveDataTypeable #-}
+  UndecidableInstances #-}
 -- | The guts of lambdabot.
 --
 -- The LB/Lambdabot monad
@@ -40,6 +40,7 @@ import qualified Message as Msg
 import qualified Shared  as S
 import qualified IRCBase as IRC (IrcMessage, quit, privmsg)
 
+import Lambdabot.Error
 import Lambdabot.Signals
 import Lambdabot.Utils
 import Lambdabot.Utils.Serial
@@ -221,14 +222,6 @@ instance Exception e => MonadError (IRCError e) LB where
               `catch` \(SignalException e) -> conv $ h $ SignalCaught e)
               `catch` \e -> conv $ h $ IRCRaised e
 
--- A type for handling both Haskell exceptions and external signals
-data IRCError e = IRCRaised e | SignalCaught Signal deriving (Typeable)
-
-instance Exception e => Exception (IRCError e)
-
-instance Show e => Show (IRCError e) where
-    show (IRCRaised    e) = show e
-    show (SignalCaught s) = show s
 
 -- lbIO return :: LB (LB a -> IO a)
 -- CPS to work around predicativiy of haskell's type system.
@@ -244,11 +237,11 @@ evalLB (LB lb) rs rws = do
 -- May wish to add more things to the things caught, or restructure things
 -- a bit. Can't just catch everything - in particular EOFs from the socket
 -- loops get thrown to this thread and we musn't just ignore them.
-handleIrc :: MonadError (IRCError e) m => ((IRCError e) -> m ()) -> m () -> m ()
+handleIrc :: MonadError (IRCError SomeException) m => ((IRCError SomeException) -> m ()) -> m () -> m ()
 handleIrc handler m = catchError m handler
 
 -- Like handleIrc, but with arguments reversed
-catchIrc :: MonadError (IRCError e) m => m () -> ((IRCError e) -> m ()) -> m ()
+catchIrc :: MonadError (IRCError SomeException) m => m () -> ((IRCError SomeException) -> m ()) -> m ()
 catchIrc = flip handleIrc
 
 ------------------------------------------------------------------------

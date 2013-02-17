@@ -14,12 +14,12 @@ module Plugin (
         module LBState,
         module Config,
 
-        module Lambdabot.Util,
-        module Lambdabot.Serial,
-        module Lambdabot.Process,
-        module Lambdabot.MiniHTTP,
-        module Lambdabot.Url,
-        module Lambdabot.Regex,
+        module Lambdabot.Utils,
+        module Lambdabot.Utils.Serial,
+        module Lambdabot.Utils.Process,
+        module Lambdabot.Utils.MiniHTTP,
+        module Lambdabot.Utils.Url,
+        module Lambdabot.Utils.Regex,
 
         module Data.List,
         module Data.Char,

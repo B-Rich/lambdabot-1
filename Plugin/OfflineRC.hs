@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, CPP, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, CPP, MultiParamTypeClasses, FlexibleContexts #-}
 -- | Offline mode / RC file / -e support module.  Handles spooling lists
 -- of commands (from readline, files, or the command line) into the vchat
 -- layer.
@@ -13,8 +13,8 @@ import Control.Monad.Reader( asks )
 import Control.Monad.State( get, gets, put )
 import Control.Concurrent( forkIO )
 import Control.Concurrent.MVar( readMVar )
-import Lambdabot.Error( finallyError )
-import Control.Exception ( evaluate )
+import Lambdabot.Error( IRCError, finallyError )
+import Control.Exception ( SomeException, evaluate )
 
 import Config
 
@@ -51,13 +51,13 @@ instance Module OfflineRCModule Integer where
                                                           act
                                 return ()
     moduleDefState _       = return 0
-    process_ _ "offline" _ = do act <- bindModule0 $ finallyError replLoop unlockRC
+    process_ _ "offline" _ = do act <- bindModule0 $ finallyIRCError replLoop unlockRC
                                 lockRC
                                 lift $ liftLB forkIO act
                                 return []
     process_ _ "rc" fn     = do txt <- io $ readFile fn
                                 io $ evaluate $ foldr seq () txt
-                                act <- bindModule0 $ finallyError (mapM_ feed $ lines txt) unlockRC
+                                act <- bindModule0 $ finallyIRCError (mapM_ feed $ lines txt) unlockRC
                                 lockRC
                                 lift $ liftLB forkIO act
                                 return []
@@ -66,7 +66,7 @@ onInit :: ModuleT Integer LB ()
 onInit = do st <- get
             put (st { ircOnStartupCmds = [] })
             let cmds = ircOnStartupCmds st
-            lockRC >> finallyError (mapM_ feed cmds) unlockRC
+            lockRC >> finallyIRCError (mapM_ feed cmds) unlockRC
 
 feed :: String -> ModuleT Integer LB ()
 feed msg = let msg' = case msg of '>':xs -> cmdPrefix ++ "run " ++ xs
@@ -106,3 +106,8 @@ lockRC = do add <- bindModule0 $ addServer "offlinerc" handleMsg
 unlockRC :: OfflineRC ()
 unlockRC = withMS $ \ cur writ -> do when (cur == 1) $ remServer "offlinerc"
                                      writ (cur - 1)
+
+finallyIRCError :: MonadError (IRCError SomeException) m => m a -- ^ Monadic operation
+                -> m b -- ^ Guard
+                -> m a -- ^ Returns: A new monad.
+finallyIRCError = finallyError

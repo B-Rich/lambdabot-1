@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, DeriveDataTypeable #-}
+{-# LANGUAGE CPP, DeriveDataTypeable, FlexibleContexts #-}
 
 -- | The signal story.
 -- Posix signals are external events that invoke signal handlers in
@@ -22,7 +22,7 @@ instance Exception SignalException
 ircSignalMessage :: Signal -> [Char]
 ircSignalMessage s = s
 
-withIrcSignalCatch :: (MonadError e m,MonadIO m) => m () -> m ()
+withIrcSignalCatch :: (MonadError (IRCError SomeException) m,MonadIO m) => m () -> m ()
 withIrcSignalCatch m = m
 
 #else
@@ -32,17 +32,11 @@ import Lambdabot.Utils
 import Data.Typeable
 
 import Control.Concurrent    (myThreadId, newEmptyMVar, putMVar, MVar, ThreadId)
-import Control.Exception.Base (Exception,throwTo)
+import Control.Exception.Base (Exception, SomeException, throwTo)
 import Control.Monad.Error
 
 import System.IO.Unsafe
 import System.Posix.Signals
-
--- A new type for the SignalException, must be Typeable so we can make a
--- dynamic exception out of it.
-newtype SignalException = SignalException Signal deriving (Show, Typeable)
-
-instance Exception SignalException
 
 --
 -- A bit of sugar for installing a new handler
@@ -127,7 +121,7 @@ catchLock = unsafePerformIO newEmptyMVar
 --
 -- | Register signal handlers to catch external signals
 --
-withIrcSignalCatch :: (MonadError e m,MonadIO m) => m () -> m ()
+withIrcSignalCatch :: (MonadError (IRCError SomeException) m,MonadIO m) => m () -> m ()
 withIrcSignalCatch m = do
     _ <- io $ installHandler sigPIPE Ignore Nothing
     _ <- io $ installHandler sigALRM Ignore Nothing

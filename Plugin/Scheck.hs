@@ -7,7 +7,7 @@ module Plugin.Scheck where
 
 import File (findFile)
 import Plugin
-import Lambdabot.Parser
+import Lambdabot.Utils.Parser
 import qualified Text.Regex as R
 
 $(plugin "Small")

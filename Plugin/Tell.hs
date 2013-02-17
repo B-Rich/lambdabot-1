@@ -52,7 +52,7 @@ import Control.Arrow (first)
 import qualified Data.Map as M
 import Text.Printf (printf)
 
-import Lambdabot.AltTime
+import Lambdabot.Utils.AltTime
 import Message
 import Plugin
 

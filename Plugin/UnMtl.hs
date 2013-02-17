@@ -15,7 +15,7 @@ import Control.Monad.Error ()
 
 import Language.Haskell.Syntax
 import Language.Haskell.Parser
-import Lambdabot.Parser (prettyPrintInLine)
+import Lambdabot.Utils.Parser (prettyPrintInLine)
 
 import Plugin as P
 

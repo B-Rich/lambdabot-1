@@ -35,12 +35,12 @@ import Lambdabot
 import LBState
 import Config
 
-import Lambdabot.Util
-import Lambdabot.Serial
-import Lambdabot.Process
-import Lambdabot.MiniHTTP
-import Lambdabot.Url
-import Lambdabot.Regex
+import Lambdabot.Utils
+import Lambdabot.Utils.Serial
+import Lambdabot.Utils.Process
+import Lambdabot.Utils.MiniHTTP
+import Lambdabot.Utils.Url
+import Lambdabot.Utils.Regex
 
 import Message
 

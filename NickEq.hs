@@ -17,7 +17,7 @@ module NickEq ( Polynick, nickMatches, readPolynick, showPolynick, lookupMononic
 
 import Message( Message, Nick, readNick, showNick )
 import Lambdabot
-import Lambdabot.Util (concatWith, split)
+import Lambdabot.Utils (concatWith, split)
 import Data.Maybe (mapMaybe)
 
 import qualified Data.Map as M

@@ -7,7 +7,7 @@ module Plugin.Check where
 
 import File (findFile)
 import Plugin
-import Lambdabot.Parser
+import Lambdabot.Utils.Parser
 
 import qualified Text.Regex as R
 import Codec.Binary.UTF8.String (decodeString)

@@ -8,7 +8,7 @@ module Plugin.Eval where
 
 import File (findFile)
 import Plugin
-import Lambdabot.Parser
+import Lambdabot.Utils.Parser
 import Language.Haskell.Exts.Parser
 import qualified Language.Haskell.Exts.Syntax as Hs
 import qualified Text.Regex as R

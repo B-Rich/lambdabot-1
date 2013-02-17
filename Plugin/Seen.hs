@@ -10,7 +10,7 @@ import Data.Binary
 
 import File (findFile)
 import Plugin
-import Lambdabot.AltTime
+import Lambdabot.Utils.AltTime
 import Lambdabot.Error         (tryError)
 import Lambdabot.Util          (lowerCaseString)
 

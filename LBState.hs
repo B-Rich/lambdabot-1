@@ -14,7 +14,7 @@ module LBState (
   ) where
 
 import Lambdabot
-import Lambdabot.Util            (withMWriter, timeout)
+import Lambdabot.Utils            (withMWriter, timeout)
 
 import Control.Concurrent (forkIO, readMVar, modifyMVar_, newMVar, MVar, ThreadId)
 import Control.Monad.Reader

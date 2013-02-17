@@ -4,7 +4,7 @@
 module Plugin.Source (theModule) where
 
 import Plugin
-import Lambdabot.Util
+import Lambdabot.Utils
 import qualified Data.Map as M
 import qualified Data.ByteString.Char8 as P
 import Data.ByteString.Char8 (pack,ByteString)

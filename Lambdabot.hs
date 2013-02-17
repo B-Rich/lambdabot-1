@@ -41,8 +41,8 @@ import qualified Shared  as S
 import qualified IRCBase as IRC (IrcMessage, quit, privmsg)
 
 import Lambdabot.Signals
-import Lambdabot.Util
-import Lambdabot.Serial
+import Lambdabot.Utils
+import Lambdabot.Utils.Serial
 
 import Prelude hiding           (mod, catch)
 

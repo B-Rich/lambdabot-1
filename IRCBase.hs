@@ -12,8 +12,8 @@ module IRCBase ( IrcMessage(..)
                ) where
 
 import Message
-import Lambdabot.Util (split, breakOnGlue, clean)
-import qualified Lambdabot.Util as Util (concatWith)
+import Lambdabot.Utils (split, breakOnGlue, clean)
+import qualified Lambdabot.Utils as Utils (concatWith)
 
 import Data.Char (chr,isSpace)
 
@@ -110,7 +110,7 @@ part loc = mkMessage (nTag loc) "PART" [nName loc]
 
 -- | 'names' builds a NAMES message from a list of channels.
 names :: String -> [String] -> IrcMessage
-names svr chans = mkMessage svr "NAMES" [Util.concatWith "," chans]
+names svr chans = mkMessage svr "NAMES" [Utils.concatWith "," chans]
 
 -- | Construct a privmsg from the CTCP TIME notice, to feed up to
 -- the @localtime-reply plugin, which then passes the output to

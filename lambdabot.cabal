@@ -3,7 +3,7 @@ Version:             4.2.3.3
 License:             GPL
 License-file:        LICENSE
 Author:              Don Stewart
-Maintainer:          Cale Gibbard <cgibbard@gmail.com>
+Maintainer:          Jan Stolarek <jan.stolarek@p.lodz.pl>
 Category:            Development, Web
 Synopsis:            Lambdabot is a development tool and advanced IRC bot
 Description:         Lambdabot is an IRC bot written over several years by
@@ -17,57 +17,191 @@ build-type:          Simple
 cabal-version:       >= 1.6
 tested-with:         GHC==7.6.2
 
-extra-source-files: Modules.hs-boot, State/imports.h, Plugin/Hello.hs, Modules.hs
-data-files:         State/djinn, State/url, State/haddock, State/source,
-                    State/L.hs, State/seen, State/state, State/Pristine.hs,
-                    State/poll, State/quote, State/todo, State/vixen,
-                    State/fresh, State/tell, State/system, State/where,
-                    State/karma, State/fact,
-                    -- Needed for @type
-                    State/imports.h,
-                    online.rc, online2.rc
+extra-source-files:
+  Modules.hs-boot,
+  State/imports.h,
+  Plugin/Hello.hs,
+  Modules.hs
+
+data-files:
+  State/djinn,
+  State/fact,
+  State/fresh,
+  State/haddock,
+  State/karma,
+  State/L.hs,
+  State/poll,
+  State/Pristine.hs,
+  State/quote,
+  State/seen,
+  State/source,
+  State/state,
+  State/system,
+  State/tell,
+  State/todo,
+  State/url,
+  State/vixen,
+  State/where,
+  -- Needed for @type
+  State/imports.h,
+  online.rc,
+  online2.rc
 
 source-repository head
-  type:     darcs
-  location: http://code.haskell.org/lambdabot
+  type:     git
+  location: git://github.com/killy9999/lambdabot.git
 
 Library
-    build-depends: base == 4.*, mtl>2, bytestring, unix, filepath, zlib, regex-posix, process
-    exposed-modules: Config, IRCBase, File,
-                     LBState, LMain, Lambdabot, Message,
-                     NickEq, Plugin, Plugin.Activity, Plugin.BF,
-                     Plugin.Babel, Plugin.Base, Plugin.Check, Plugin.Code, Plugin.Compose,
-                     Plugin.DarcsPatchWatch, Plugin.Dice, Plugin.Dict, Plugin.Dict.DictLookup, Plugin.Djinn,
-                     Plugin.Dummy, Plugin.Dummy.DocAssocs, Plugin.Dynamic, Plugin.Elite, Plugin.Eval,
-                     Plugin.FT, Plugin.Fact, Plugin.Filter, Plugin.Free, Plugin.Free.Expr,
-                     Plugin.Free.FreeTheorem, Plugin.Free.Parse, Plugin.Free.Test, Plugin.Free.Theorem, Plugin.Free.Type,
-                     Plugin.Free.Util, Plugin.Fresh, Plugin.Haddock, Plugin.Help,
-                     Plugin.Hoogle, Plugin.IRC, Plugin.Instances, Plugin.Karma, Plugin.Localtime,
-                     Plugin.Log, Plugin.More, Plugin.OEIS, Plugin.OfflineRC,
-                     Plugin.Pl, Plugin.Pl.Common, Plugin.Pl.Names, Plugin.Pl.Optimize, Plugin.Pl.Parser,
-                     Plugin.Pl.PrettyPrinter, Plugin.Pl.RuleLib, Plugin.Pl.Rules, Plugin.Pl.Transform,
-                     Plugin.Pointful, Plugin.Poll, Plugin.Pretty, Plugin.Quote, Plugin.Quote.Fortune,
-                     Plugin.Quote.Text, Plugin.Search, Plugin.Seen, Plugin.Slap, Plugin.Scheck
-                     Plugin.Source, Plugin.Spell, Plugin.State, Plugin.System, Plugin.Tell,
-                     Plugin.Ticker, Plugin.Todo, Plugin.Topic, Plugin.Type, Plugin.UnMtl,
-                     Plugin.Undo, Plugin.Unlambda, Plugin.Url, Plugin.Version, Plugin.Vixen,
-                     Plugin.Where, Shared
-    other-modules:   Lambdabot.Utils
-    ghc-options: -fno-warn-missing-methods
-    buildable:   False
+  build-depends:
+    base == 4.*,
+    bytestring,
+    filepath,
+    mtl>2,
+    process,
+    regex-posix,
+    unix,
+    zlib
+  exposed-modules:
+    Config,
+    File,
+    IRCBase,
+    LBState,
+    LMain,
+    Lambdabot,
+    Lambdabot.Utils,
+    Message,
+    NickEq,
+    Plugin,
+    Plugin.Activity,
+    Plugin.BF,
+    Plugin.Babel,
+    Plugin.Base,
+    Plugin.Check,
+    Plugin.Code,
+    Plugin.Compose,
+    Plugin.DarcsPatchWatch,
+    Plugin.Dice,
+    Plugin.Dict,
+    Plugin.Dict.DictLookup,
+    Plugin.Djinn,
+    Plugin.Dummy,
+    Plugin.Dummy.DocAssocs,
+    Plugin.Dynamic,
+    Plugin.Elite,
+    Plugin.Eval,
+    Plugin.FT,
+    Plugin.Fact,
+    Plugin.Filter,
+    Plugin.Free,
+    Plugin.Free.Expr,
+    Plugin.Free.FreeTheorem,
+    Plugin.Free.Parse,
+    Plugin.Free.Test,
+    Plugin.Free.Theorem,
+    Plugin.Free.Type,
+    Plugin.Free.Util,
+    Plugin.Fresh,
+    Plugin.Haddock,
+    Plugin.Help,
+    Plugin.Hoogle,
+    Plugin.IRC,
+    Plugin.Instances,
+    Plugin.Karma,
+    Plugin.Localtime,
+    Plugin.Log,
+    Plugin.More,
+    Plugin.OEIS,
+    Plugin.OfflineRC,
+    Plugin.Pl,
+    Plugin.Pl.Common,
+    Plugin.Pl.Names,
+    Plugin.Pl.Optimize,
+    Plugin.Pl.Parser,
+    Plugin.Pl.PrettyPrinter,
+    Plugin.Pl.RuleLib,
+    Plugin.Pl.Rules,
+    Plugin.Pl.Transform,
+    Plugin.Pointful,
+    Plugin.Poll,
+    Plugin.Pretty,
+    Plugin.Quote,
+    Plugin.Quote.Fortune,
+    Plugin.Quote.Text,
+    Plugin.Scheck
+    Plugin.Search,
+    Plugin.Seen,
+    Plugin.Slap,
+    Plugin.Source,
+    Plugin.Spell,
+    Plugin.State,
+    Plugin.System,
+    Plugin.Tell,
+    Plugin.Ticker,
+    Plugin.Todo,
+    Plugin.Topic,
+    Plugin.Type,
+    Plugin.UnMtl,
+    Plugin.Undo,
+    Plugin.Unlambda,
+    Plugin.Url,
+    Plugin.Version,
+    Plugin.Vixen,
+    Plugin.Where,
+    Shared
+  ghc-options:
+    -fno-warn-missing-methods
+  buildable:
+    False
 
 Executable          lambdabot
-    Build-depends:       base == 4.*, containers, directory, pretty, parsec, old-time, random, array, network, syb,
-                         unix, mtl>2, bytestring, regex-compat, readline, binary>0.2, haskell-src, haskell-src-exts>=0.4.8,
-                         oeis>=0.2, show>=0.3, utf8-string, template-haskell, filepath, tagsoup, HTTP,
-                         -- runtime dependencies - for eval etc.
-                         brainfuck, unlambda, template-haskell, numbers, logict>=0.4.2, IOSpec, vector-space, MonadRandom,
-                         data-memocombinators, arrows, mueval, hoogle
+  Build-depends:
+    HTTP,
+    array,
+    base == 4.*,
+    binary>0.2,
+    bytestring,
+    containers,
+    directory,
+    filepath,
+    haskell-src,
+    haskell-src-exts>=0.4.8,
+    mtl>2,
+    network,
+    oeis>=0.2,
+    old-time,
+    parsec,
+    pretty,
+    random,
+    readline,
+    regex-compat,
+    show>=0.3,
+    syb,
+    tagsoup,
+    template-haskell,
+    unix,
+    utf8-string,
+    -- runtime dependencies - for eval etc.
+    IOSpec,
+    MonadRandom,
+    arrows,
+    brainfuck,
+    data-memocombinators,
+    hoogle,
+    logict>=0.4.2,
+    mueval,
+    numbers,
+    template-haskell,
+    unlambda,
+    vector-space
 
-    Main-is:             Main.hs
-    -- For a faster build, use -Onot
-    ghc-options:         -funbox-strict-fields -fno-warn-incomplete-patterns
-                         -fno-warn-missing-methods -fno-warn-orphans
-                         -- Apparently needed to work around zombie & IRC connection issues
-                         -threaded
-    include-dirs:        .
+  Main-is:
+    Main.hs
+
+  ghc-options:
+    -funbox-strict-fields
+    -fno-warn-incomplete-patterns
+    -fno-warn-missing-methods
+    -fno-warn-orphans
+    -- Apparently needed to work around zombie & IRC connection issues
+    -threaded
+  include-dirs:        .

@@ -111,3 +111,7 @@ Spencer Janssen <sjanssen@cse.unl.edu> aka sjanssen on #haskell
 
 Gwern Branwen <gwern0@gmail.com> aka gwern on #haskell
     * Packaging of unlambda and brainfuck
+
+Jan Stolarek <jan.stolarek@p.lodz.pl> aka killy9999 on #haskell
+    * port to GHC 7.6
+    * code cleanup and maintanance

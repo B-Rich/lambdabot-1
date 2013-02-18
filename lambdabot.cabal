@@ -158,6 +158,8 @@ Library
 Executable lambdabot
   hs-source-dirs:
     src
+  main-is:
+    Lambdabot/Main.hs
   build-depends:
     HTTP,
     array,
@@ -197,8 +199,6 @@ Executable lambdabot
     template-haskell,
     unlambda,
     vector-space
-  main-is:
-    Main.hs
   ghc-options:
     -funbox-strict-fields
     -fno-warn-incomplete-patterns

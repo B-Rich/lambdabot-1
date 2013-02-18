@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances,
+  FlexibleInstances, FlexibleContexts #-}
 -- Copyright (c) 2004 Thomas Jaeger
 -- Copyright (c) 2005-6 Don Stewart - http://www.cse.unsw.edu.au/~dons
 -- GPL version 2 or later (see http://www.gnu.org/copyleft/gpl.html)
@@ -11,8 +12,8 @@ import Data.Binary
 import Lambdabot.File (findFile)
 import Lambdabot.Plugin
 import Lambdabot.Utils.AltTime
-import Lambdabot.Error         (tryError)
-import Lambdabot.Util          (lowerCaseString)
+import Lambdabot.Error         (IRCError, tryError)
+import Lambdabot.Utils         (lowerCaseString)
 
 import qualified Lambdabot.Message as G (Message, names, channels, nick, packNick, unpackNick, Nick(..), body, lambdabotName, showNick, readNick)
 
@@ -20,10 +21,11 @@ import qualified Data.Map as M
 import qualified Data.ByteString.Char8 as P
 import qualified Data.ByteString.Lazy as L
 
-import System.Directory
+import System.Directory hiding (findFile)
 
 import System.Time (normalizeTimeDiff) -- or export from AltTime.hs?
 
+import Control.Exception   (IOException)
 import Control.Monad       (unless, zipWithM_)
 import Control.Arrow       (first)
 import Text.Printf
@@ -192,7 +194,7 @@ instance Module SeenModule SeenState where
 
       -- This magically causes the 353 callback to be invoked :)
       -- this is broken...
-      lift $ tryError $ send . G.names "freenode" . map G.nName =<< ircGetChannels
+      lift $ tryIRCError $ send . G.names "freenode" . map G.nName =<< ircGetChannels
 
       -- and suck in our state. We read directly from the handle, to avoid copying
 
@@ -384,6 +386,12 @@ msgCB _ fm ct nick =
 -- misc. functions
 unUserMode :: G.Nick -> G.Nick
 unUserMode nick = G.Nick (G.nTag nick) (dropWhile (`elem` "@+") $ G.nName nick)
+
+
+tryIRCError :: MonadError (IRCError IOException) m => m a -- ^ Monad to operate on
+         -> m (Either (IRCError IOException) a) -- ^ Returns: Explicit Either type
+tryIRCError = tryError
+
 
 -- | Callbacks are only allowed to use a limited knowledge of the world.
 -- 'withSeenFM' is (up to trivial isomorphism) a monad morphism from the

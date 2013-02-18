@@ -152,8 +152,6 @@ library
     Lambdabot.Shared
   ghc-options:
     -fno-warn-missing-methods
-  buildable:
-    True
 
 Executable lambdabot
   hs-source-dirs:

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables, FlexibleInstances #-}
 -- Copyright (c) 2004-06 Don Stewart - http://www.cse.unsw.edu.au/~dons
 -- GPL version 2 or later (see http://www.gnu.org/copyleft/gpl.html)
 --
@@ -6,8 +6,10 @@
 --
 module Lambdabot.Plugin.Dynamic (theModule) where
 
+import Lambdabot.Error
 import Lambdabot.Plugin
 import Control.Monad.State
+import Control.Exception
 
 $(plugin "Dynamic")
 
@@ -37,7 +39,7 @@ load nm = do
         (do (_,md) <- ircLoad file "theModule"
             ircInstallModule md nm
             return True) -- need to put mod in state
-        (\_ -> do
+        (\(_  :: IRCError IOException) -> do
             ircUnload file
             liftIO $ putStrLn $ "\nCouldn't load "++nm++", ignoring"
             return False)

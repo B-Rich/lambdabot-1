@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, ScopedTypeVariables #-}
 
 -- Copyright (c) 2005 Stefan Wehr (http://www.stefanwehr.de)
 -- GPL version 2 or later (see http://www.gnu.org/copyleft/gpl.html)
@@ -9,11 +9,9 @@ module Lambdabot.Plugin.DarcsPatchWatch (theModule) where
 import Lambdabot.Plugin
 
 import qualified Data.ByteString.Char8 as P
-import Prelude hiding ( catch )
 
 import Control.Concurrent (forkIO, killThread, modifyMVar_, readMVar, threadDelay, MVar, ThreadId)
 import Control.Exception
-import Control.Monad       ( when )
 
 import System.Directory
 import System.Time
@@ -189,7 +187,7 @@ mkRepo pref_ =
                         pref = dropSpace pref_
                     perms <- getPermissions pth
                     return (Right (pref, perms))
-                      `catch` (\e -> return $ Left (show e))
+                      `catch` (\(e :: IOException) -> return $ Left (show e))
        case x of
          Left e -> return $ Left e
          Right (pref, perms)
@@ -220,7 +218,7 @@ watchRepos = do
           forkForeverLB :: LB a -> LB ThreadId
           forkForeverLB f = (`liftLB` f) $ \g -> do
                       forkIO $ do
-                          g
+                          _ <- g
                           return ()
 
 

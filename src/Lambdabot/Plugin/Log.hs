@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-unused-binds #-}
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances #-}
 
 -- Copyright (c) 2004 Thomas Jaeger
 -- Copyright (c) 2005 Simon Winwood
@@ -16,7 +16,7 @@ import qualified Lambdabot.Message as Msg
 import Control.Monad (when)
 import qualified Data.Map as M
 import System.Time
-import Lambdabot.Util ( timeStamp )
+import Lambdabot.Utils ( timeStamp )
 import System.Directory (createDirectoryIfMissing)
 
 -- ------------------------------------------------------------------------
@@ -149,7 +149,7 @@ cleanLogState =
 
 -- | Fetch a channel from the internal map. Uses LB's fail if not found.
 getChannel :: Channel -> Log ChanState
-getChannel c = (readMS >>=) . M.lookup $ c
+getChannel c = error "getChannel in Log plugin not implemented!" --(readMS >>=) . M.lookup $ c
 
 getDate :: Channel -> Log DateStamp
 getDate c = fmap chanDate . getChannel $ c

@@ -17,4 +17,4 @@ instance Module VersionModule () where
                      "and darcs repo of this bot"
     process_ _ _ _ = ios . return $ concat
                 [ "lambdabot ", showVersion version, "\n"
-                , "darcs get http://code.haskell.org/lambdabot" ]
+                , "git clone https://github.com/killy9999/lambdabot" ]

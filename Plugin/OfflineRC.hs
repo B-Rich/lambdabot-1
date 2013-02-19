@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, CPP, MultiParamTypeClasses #-}
 -- | Offline mode / RC file / -e support module.  Handles spooling lists
--- of commands (from readline, files, or the command line) into the vchat
+-- of commands (from haskeline, files, or the command line) into the vchat
 -- layer.
 module Plugin.OfflineRC (theModule) where
 
@@ -14,25 +14,11 @@ import Control.Monad.State( get, gets, put )
 import Control.Concurrent( forkIO )
 import Control.Concurrent.MVar( readMVar )
 import Lambdabot.Error( finallyError )
-import Control.OldException ( evaluate )
+import Control.Exception ( evaluate )
+import System.Console.Haskeline
+import System.Console.Haskeline.History as Hist ( addHistory )
 
 import Config
-
-#ifdef mingw32_HOST_OS
--- Work around the lack of readline on windows
-readline :: String -> IO (Maybe String)
-readline p = do
-    putStr p
-    hFlush stdout
-    liftM Just getLine
-
-addHistory :: String -> IO ()
-addHistory _ = return ()
-
-#else
-import System.Console.Readline( readline, addHistory )
-#endif
-
 
 $(plugin "OfflineRC")
 
@@ -51,7 +37,7 @@ instance Module OfflineRCModule Integer where
                                                           act
                                 return ()
     moduleDefState _       = return 0
-    process_ _ "offline" _ = do act <- bindModule0 $ finallyError replLoop unlockRC
+    process_ _ "offline" _ = do act <- bindModule0 $ finallyError (runInputT defaultSettings replLoop) unlockRC
                                 lockRC
                                 lift $ liftLB forkIO act
                                 return []
@@ -88,12 +74,12 @@ handleMsg msg = liftIO $ do
                   hPutStrLn stdout str
                   hFlush stdout
 
-replLoop :: OfflineRC ()
-replLoop = do line <- io $ readline "lambdabot> "
+replLoop :: InputT OfflineRC ()
+replLoop = do line <- getInputLine "lambdabot> "
               s' <- case line of Nothing -> fail "<eof>"
                                  Just x -> return $ dropWhile isSpace x
-              when (not $ null s') (do io (addHistory s')
-                                       feed s')
+              when (not $ null s') (do modifyHistory (addHistory s')
+                                       lift $ feed s')
               continue <- gets ircStayConnected
               when continue replLoop
 
